@@ -32,8 +32,16 @@ exports.createUser = async (req, res) => {
   }
 };
 exports.loginUser = async (req, res) => {
-  res.json(req.user); // req.user is a special object created by passport.js
+  res.cookie('jwt',req.user.token,{
+    expires:new Date(Date.now()+3600000),
+    httpOnly:true,
+  }).status(201).json(req.user.token);
+  // res.json(req.user); // req.user is a special object created by passport.js
 };
 exports.checkUser = async (req, res) => {
-  res.json(req.user);
+  if(req.user){
+    res.json(req.user);
+  }else{
+    res.sendStatus(401);
+  }
 };

@@ -23,6 +23,7 @@ const cartRouter = require("./routes/Cart");
 const ordersRouter = require("./routes/Order");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser } = require("./services/common");
+const cookieParser = require("cookie-parser");
 
 const SECRET_KEY = "SECRET_KEY";
 // JWT Options
@@ -31,6 +32,7 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = SECRET_KEY;
 
 // Middlewares
+server.use(cookieParser());
 server.use(
   session({
     secret: "keyboard cat",
@@ -76,7 +78,7 @@ passport.use(
           }
           const token = jwt.sign(sanitizeUser(user), SECRET_KEY);
 
-          done(null, token);
+          done(null, {id:user.id, role:user.role, token});
         }
       );
     } catch (error) {
